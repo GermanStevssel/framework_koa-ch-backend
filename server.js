@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const koaBody = require("koa-body");
+const productsRouter = require("./routes/productsRoutes.js");
 const config = require("./config/index.js");
 
 const app = new Koa();
@@ -11,13 +12,10 @@ if (config.DB.toLowerCase() === "mongo") {
 
 // ----- middlewares -----
 app.use(koaBody()); // body-parser - urlencoded, multi-part y json
+app.use(productsRouter.routes()).use(productsRouter.allowedMethods());
 
-app.use(async (ctx) => {
-	ctx.body = " Hello World";
-});
-
-const PORT = 8080;
+const PORT = config.PORT;
 const server = app.listen(PORT, () => {
-	console.log(`Server is up in port ${PORT}`);
+	console.log(`Server is up in port ${PORT} || Worker ${process.pid} started!`);
 });
 server.on("error", (error) => console.log(`Server error: ${error}`));
