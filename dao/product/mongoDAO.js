@@ -5,53 +5,55 @@ const ProductDTO = require("../../dto/productDTO.js");
 const isValidId = mongoose.Types.ObjectId.isValid;
 
 class ProductMongoDAO {
-  constructor()
+	constructor() {}
 
-  create = async (data) => {
-    const {id, title, price, thumbnail} = await Product.create(data)
-    return new ProductDTO(id, title, price, thumbnail)
-  }
+	async create(data) {
+		const { id, title, price, thumbnail } = await Product.create(data);
+		return new ProductDTO(id, title, price, thumbnail);
+	}
 
-  findById = async (id) => {
-    if (!isValidId(id)) return null;
+	async findById(id) {
+		if (!isValidId(id)) return null;
 
-    const product = await Product.findById(id);
+		const product = await Product.findById(id);
 
-    if (product) {
-      const { id, title, price, thumbnail } = product;
-      return new ProductDTO(id, title, price, thumbnail);
-    }
-    return null;
-  }
+		if (product) {
+			const { _id, title, price, thumbnail } = product;
+			return new ProductDTO(_id, title, price, thumbnail);
+		}
+		return null;
+	}
 
-  findAll = async () => {
-    const products = await Product.find();
-    return products.map(
-      ({ id, title, price, thumbnail }) =>
-        new ProductDTO(id, title, price, thumbnail)
-    );
-  }
+	async findAll() {
+		const products = await Product.find();
+		return products.map(
+			({ id, title, price, thumbnail }) =>
+				new ProductDTO(id, title, price, thumbnail)
+		);
+	}
 
-  update = async (id, toUpdate) => {
-    if (!isValidId(id)) return null;
+	async update(id, toUpdate) {
+		if (!isValidId(id)) return null;
 
-    if (await Product.findByIdAndUpdate(id, toUpdate)) {
-      return new ProductDTO(
-        id,
-        toUpdate.title,
-        toUpdate.price,
-        toUpdate.thumbnail
-      );
-    }
-    return null;
-  }
+		if (await Product.findByIdAndUpdate(id, toUpdate)) {
+			return new ProductDTO(
+				id,
+				toUpdate.title,
+				toUpdate.price,
+				toUpdate.thumbnail
+			);
+		}
+		return null;
+	}
 
-  delete = async (id) => {
-    if (!isValidId(id)) return null;
+	async delete(id) {
+		if (!isValidId(id)) return null;
 
-    const { id, title, price, thumbnail } = await Product.findByIdAndDelete(id);
-    return new ProductDTO(id, title, price, thumbnail);
-  }
+		const { _id, title, price, thumbnail } = await Product.findByIdAndDelete(
+			id
+		);
+		return new ProductDTO(_id, title, price, thumbnail);
+	}
 }
 
 module.exports = new ProductMongoDAO();

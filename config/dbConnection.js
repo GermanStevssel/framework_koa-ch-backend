@@ -7,7 +7,7 @@ const connection = Mongoose.connect(`${mongoURI}`, {
 });
 
 Mongoose.connection.on("connected", () => {
-	console.log(`Mongoose is connected to ${mongoURI}`);
+	console.log(`Mongoose is connected`);
 });
 
 Mongoose.connection.on("error", (err) => {
